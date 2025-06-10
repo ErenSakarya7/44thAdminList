@@ -1,0 +1,26 @@
+name: Update Admin List
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'   # every 30 minutes
+  workflow_dispatch:         # manual trigger
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Run update script
+        run: |
+          chmod +x update.sh
+          ./update.sh
+
+      - name: Commit and push if changed
+        run: |
+          git config --global user.email "you@example.com"
+          git config --global user.name "GitHub Action"
+          git add adminlist.cfg
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update adminlist.cfg"
+          git push
